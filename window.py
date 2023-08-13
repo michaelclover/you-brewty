@@ -16,7 +16,13 @@ class Window:
         centre_x = int(screen_width / 2 - self.window_width / 2)
         centre_y = int(screen_height / 2 - self.window_height / 2)
 
-        self.root.geometry(f"{self.window_width}x{self.window_height}+{centre_x}+{centre_y}")
+        Window.root.geometry(f"{self.window_width}x{self.window_height}+{centre_x}+{centre_y}")
+
+    def icon(self, path):
+        Window.root.iconbitmap(path)
+
+    def title(self, title):
+        Window.root.title(title)
 
     def mainloop(self):
         Window.root.mainloop()
