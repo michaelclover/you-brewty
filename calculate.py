@@ -1,3 +1,4 @@
+import math
 import convert
 
 # weight =        weight of fermentable in lbs
@@ -24,3 +25,21 @@ def post_mash_volume(initial_volume, lbs_fermentables):
 def post_boil_volume(initial_volume, boil_duration):
     post_volume = convert.us_gallon_to_litre(initial_volume)
     return convert.litre_to_us_gallon(post_volume - (3.0 * boil_duration))
+
+# boil_gravity = the gravity of the boil, i.e. the ferment potential x poundage over the boil volume
+# intro_time = minutes during the boil the hops are introduced
+def tinseth_utilisation(boil_gravity, intro_time):
+    fg = 1.65 * math.pow(0.000125, (boil_gravity - 1)) #0.000125(boil_gravity - 1)
+    ft = (1 - math.pow(math.e, (-0.04 * intro_time))) / 4.15
+    return fg * ft
+
+# aau (alpha acid units) = aau of the hop used
+# oz = amount of hops, in ounces, used in the boil
+# intro_time = minutes during the boil the hops are introduced
+# boil_gravity = the gravity of the boil, i.e. the ferment potential x poundage over the boil volume
+# final_volume = the final recipe volume
+def tinseth_ibu(aau, oz, intro_time, boil_gravity, final_volume):
+    au = aau * oz
+    util = tinseth_utilisation(boil_gravity, intro_time)
+    tinseth = au * util * (75 / final_volume)
+    return math.floor(tinseth)

@@ -9,6 +9,14 @@ pounds_of_malt = 10 # the amount of malt to use in the recipe, in lbs
 efficiency_factor = 0.70 # the efficiency factor of the brewing system setup
 yeast_attenuation = 0.28 # the attenuation of the yeast used in this recipe
 mash_volume = 5 # the volume to use in the mash, in us gals
+
+hop_oz = 1.5
+hop_aau = 6.4
+hop_boil = 60
+
+hop1_oz = 1
+hop1_aau = 4.6
+hop1_boil = 15
     
 def main():
     # given a mash volume (in us gallons) and weight of fermentables (in lbs), 
@@ -28,11 +36,15 @@ def main():
                         efficiency_factor, 
                         yeast_attenuation)
 
+    ibu = calculate.tinseth_ibu(hop_aau, hop_oz, hop_boil, 1.080, 5)
+    ibu += calculate.tinseth_ibu(hop1_aau, hop1_oz, hop1_boil, 1.080, 5)
+
     print(f"\nFermentables weight(lbs): {pounds_of_malt:.2f}\n\
 Mash volume(gals): {mash_volume:.2f}\n\
 Pre-boil volume(gals): {pre_boil_volume:.2f}\n\
 Post-boil volume(gals): {post_boil_volume:.2f}\n\
-ABV: {abv:.2f}%\n")
+ABV: {abv:.2f}%\n\
+IBU: {ibu}\n")
 
     '''wnd = window.Window(640, 480)
     wnd.title("You Brewty!")
