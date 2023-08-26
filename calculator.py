@@ -1,7 +1,6 @@
 import calculate
 import window
 
-batch_volume = 28 # the target batch volume, e.g. the desired amount of water into the fermenter
 water_grist_ratio = 3 # target water-to-grist-ratio, in litres per kg of malt
 fermenter_volume = 5 # target volume into the fermenter, in us gals
 fermentables_potential = 36 # the points potential of the fermentables, 1.036 for pale malt
@@ -41,7 +40,7 @@ def main():
     ibu = calculate.tinseth_ibu(hop_aau, hop_oz, hop_boil, 1.080, 5)
     ibu += calculate.tinseth_ibu(hop1_aau, hop1_oz, hop1_boil, 1.080, 5)
 
-    mcu = calculate.malt_colour_units(pounds_of_malt, malt_lovibond, batch_volume)
+    mcu = calculate.malt_colour_units(pounds_of_malt, malt_lovibond, fermenter_volume)
     srm = calculate.morey_srm(mcu)
 
     print(f"\nFermentables weight(lbs): {pounds_of_malt:.2f}\n\
