@@ -17,6 +17,8 @@ hop_boil = 60
 hop1_oz = 1
 hop1_aau = 4.6
 hop1_boil = 15
+
+malt_lovibond = 3.75
     
 def main():
     # given a mash volume (in us gallons) and weight of fermentables (in lbs), 
@@ -39,12 +41,16 @@ def main():
     ibu = calculate.tinseth_ibu(hop_aau, hop_oz, hop_boil, 1.080, 5)
     ibu += calculate.tinseth_ibu(hop1_aau, hop1_oz, hop1_boil, 1.080, 5)
 
+    mcu = calculate.malt_colour_units(pounds_of_malt, malt_lovibond, batch_volume)
+    srm = calculate.morey_srm(mcu)
+
     print(f"\nFermentables weight(lbs): {pounds_of_malt:.2f}\n\
 Mash volume(gals): {mash_volume:.2f}\n\
 Pre-boil volume(gals): {pre_boil_volume:.2f}\n\
 Post-boil volume(gals): {post_boil_volume:.2f}\n\
 ABV: {abv:.2f}%\n\
-IBU: {ibu}\n")
+IBU: {ibu}\n\
+SRM: {srm:.2f}\n")
 
     '''wnd = window.Window(640, 480)
     wnd.title("You Brewty!")

@@ -43,3 +43,13 @@ def tinseth_ibu(aau, oz, intro_time, boil_gravity, final_volume):
     util = tinseth_utilisation(boil_gravity, intro_time)
     tinseth = au * util * (75 / final_volume)
     return math.floor(tinseth)
+
+# weight = the weight of the fermentable in lbs
+# lovibond = the degrees lovibond of the fermentable
+# vol = the batch volume
+def malt_colour_units(weight, lovibond, vol):
+    return (weight * lovibond) / vol
+
+# mcu = malt colour units
+def morey_srm(mcu):
+    return 1.4922 * (math.pow(mcu, 0.6859))
