@@ -7,11 +7,24 @@ import convert
 # factor =        how efficient the brew system is at extracting all of the sugars
 # attenuation =   the attenuation of the yeast being used in percent (%) though needs converting to fraction
 def abv(weight, potential, volume, factor, attenuation):
+    ogg = og(weight, potential, factor, volume)
+    fgg = fg(ogg, attenuation)
+    return (ogg - fgg) * 131.25
+
+# weight =        weight of fermentable in lbs
+# potential =     potential of fermentable in percent (%) though needs converting to ppm
+# volume =        the final liquid volume into the fermenter, in US gallons
+# factor =        how efficient the brew system is at extracting all of the sugars
+def og(weight, potential, factor, volume):
     gp = potential * weight
     gp *= factor
     og = gp / volume
-    fg = og * attenuation
-    return (convert.to_ppm(og) - convert.to_ppm(fg)) * 131.25
+    return convert.to_ppm(og)
+
+# og = the original gravity in ppm
+# attenuation =   the attenuation of the yeast being used in percent (%) though needs converting to fraction
+def fg(og, attenuation):
+    return 1 + (og - 1) * attenuation
 
 # initial_volume =   the initial mash or strike volume in us gals
 # lbs_fermentables = the weight of fermentables in lbs
@@ -42,7 +55,7 @@ def tinseth_ibu(aau, oz, intro_time, boil_gravity, final_volume):
     au = aau * oz
     util = tinseth_utilisation(boil_gravity, intro_time)
     tinseth = au * util * (75 / final_volume)
-    return math.floor(tinseth)
+    return tinseth
 
 # weight = the weight of the fermentable in lbs
 # lovibond = the degrees lovibond of the fermentable
@@ -53,3 +66,9 @@ def malt_colour_units(weight, lovibond, vol):
 # mcu = malt colour units
 def morey_srm(mcu):
     return 1.4922 * (math.pow(mcu, 0.6859))
+
+# target = the target water-to-grist ratio, expressed as ltr/kg
+# weight = weight of fermentables in lbs
+def mash_water(target, weight):
+    unrounded = convert.litre_to_us_gallon(convert.lb_to_kg(weight) * target)
+    return math.floor(unrounded * 10) / 10

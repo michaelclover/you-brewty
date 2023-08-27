@@ -12,3 +12,6 @@ def litre_to_us_gallon(litre):
 
 def to_ppm(g):
     return (g / 1000) + 1
+
+def pts_to_pct(pts):
+    return 1.0 + (pts / 1000)
