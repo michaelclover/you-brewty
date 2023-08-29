@@ -1,9 +1,20 @@
+import json
+
 import calculate
 
 class Recipe:
 
-    def __init__(self, name, efficiency, yeast_attenuation, initial_volume, 
-                 target_water_grist_ratio, boil_time, fermentables, hops):
+    def __init__(self, 
+                 name="", 
+                 efficiency=0.0, 
+                 yeast_attenuation=0.0, 
+                 initial_volume=0, 
+                 target_water_grist_ratio=0, 
+                 boil_time=0, 
+                 fermentables=[{}], 
+                 hops=[{}],
+                 notes=""):
+        self.file_version = 1.0
         self.name = name
         self.efficiency = efficiency
         self.yeast_attenuation = yeast_attenuation
@@ -12,8 +23,28 @@ class Recipe:
         self.boil_time = boil_time
         self.fermentables = fermentables
         self.hops = hops
+        self.notes = notes
 
-    # private methods
+    def __eq__(self, other):
+        return (isinstance(other, Recipe) and
+                self.file_version == other.file_version and
+                self.name == other.name and
+                self.efficiency == other.efficiency and
+                self.yeast_attenuation == other.yeast_attenuation and
+                self.initial_volume == other.initial_volume and
+                self.target_water_grist_ratio == other.target_water_grist_ratio and
+                self.boil_time == other.boil_time and
+                self.fermentables == other.fermentables and
+                self.hops == other.hops and
+                self.notes == other.notes)
+
+    def load_file(self, filepath):
+        with open(f"{filepath}", 'r', encoding='utf-8') as f:
+            self.__dict__ = json.load(f)
+
+    def save_file(self, filepath):
+        with open(f"{filepath}", 'w', encoding='utf-8') as f:
+            json.dump(self.__dict__, f, ensure_ascii=False, indent=4)
 
     def fermentables_weight(self):
         lbs = 0.0
@@ -26,8 +57,6 @@ class Recipe:
         for i in self.fermentables:
             potential += i["potential"]
         return potential
-
-    # public methods
 
     def mash_volume(self):
         return calculate.mash_water(self.target_water_grist_ratio, self.fermentables_weight())

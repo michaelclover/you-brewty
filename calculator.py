@@ -2,15 +2,9 @@ import recipe
     
 def main():
 
-    sample_recipe = recipe.Recipe(name="SMaSH pale ale",
-                                  efficiency=0.70,
-                                  yeast_attenuation=0.28,
-                                  initial_volume=7,
-                                  target_water_grist_ratio=3,
-                                  boil_time=1,
-                                  fermentables=[{"weight": 10, "potential": 38, "lovibond": 3.75}],
-                                  hops=[{"ounces": 1.5, "aau": 6.4, "boil_time": 60}, 
-                                        {"ounces": 1.0, "aau": 4.6, "boil_time": 15}])
+    # load our recipe.
+    sample_recipe = recipe.Recipe()
+    sample_recipe.load_file("./recipes/SMaSH pale ale.json")
 
     # calculate the mash volume based on the desired water-to-grist ratio.
     mash_volume = sample_recipe.mash_volume()
