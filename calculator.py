@@ -1,4 +1,5 @@
 import recipe
+import window
     
 def main():
 
@@ -55,6 +56,9 @@ ABV: {abv:.2f}%\n\
 IBU: {ibu:.2f}\n\
 MCU: {mcu:.2f}\n\
 SRM: {srm:.2f}\n")
+
+    win = window.Window()
+    win.mainloop()
 
 if __name__ == "__main__":
     main()
