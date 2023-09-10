@@ -23,7 +23,7 @@ def main():
     sample_recipe = recipe.Recipe()
     sample_recipe.load_file("./recipes/SMaSH pale ale.json")
 
-    output_recipe(sample_recipe)
+    #output_recipe(sample_recipe)
 
     win = window.Window(sample_recipe)
     win.mainloop()
