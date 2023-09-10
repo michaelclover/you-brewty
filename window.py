@@ -54,6 +54,7 @@ class Window(ctk.CTk):
 
         self.fermentables_entry = ctk.CTkEntry(self.fermentables_frame, placeholder_text="fermentable")
         self.fermentables_entry.grid(row=1, column=0, sticky="nsew", padx=10)
+        self.fermentables_entry.bind(sequence="<FocusOut>", command=self.on_lose_focus_fermentable)
 
         self.fermentables_frame_scroll = ctk.CTkScrollableFrame(master=self.fermentables_frame, border_color="white", border_width=1)
         self.fermentables_frame_scroll.grid(row=2, column=0, sticky="nsew", padx=10, pady=(5, 0))
@@ -104,3 +105,9 @@ class Window(ctk.CTk):
     def button_file_save(self):
         file_save(self.recipe)
 
+    def on_lose_focus_fermentable(self, event):
+        try:
+            entry = float(self.fermentables_entry.get())
+            print("It's a float!")
+        except ValueError:
+            print("It's not a float!")
