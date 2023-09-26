@@ -1,20 +1,81 @@
-import customtkinter as ctk
+import tkinter as tk
+import tkinter.messagebox as tkmb
 import tkinter.filedialog as tkfd
+import customtkinter as ctk
+
+import recipe
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
-
-def file_save(recipe):
-    returned = tkfd.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
-    if not returned:
-        return
-    recipe.save_file(returned)
 
 class HopsWindow(ctk.CTkToplevel):
 
     def __init__(self, main_window):
 
         super().__init__()
+
+        self.geometry("400x300")
+
+        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
+        self.button_ok.pack(padx=20, pady=20)
+
+    def close_window(self):  
+        self.withdraw()
+
+class FermentablesWindow(ctk.CTkToplevel):
+
+    def __init__(self, main_window):
+
+        super().__init__()
+
+        self.geometry("400x300")
+
+        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
+        self.button_ok.pack(padx=20, pady=20)
+
+    def close_window(self):  
+        self.withdraw()
+
+    def button_add_fermentable(self):
+        label = ctk.CTkLabel(master=self.fermentables_frame_scroll, text=self.fermentables_entry.get(), text_color="white")
+        label.grid(row=self.rowno, column=0, sticky="nsew")
+        self.rowno = self.rowno + 1
+
+class WaterConfigurationWindow(ctk.CTkToplevel):
+
+    def __init__(self, main_window):
+
+        super().__init__()
+
+        self.geometry("400x300")
+
+        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
+        self.button_ok.pack(padx=20, pady=20)
+
+    def close_window(self):  
+        self.withdraw()
+
+class YeastWindow(ctk.CTkToplevel):
+
+    def __init__(self, main_window):
+
+        super().__init__()
+
+        self.geometry("400x300")
+
+        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
+        self.button_ok.pack(padx=20, pady=20)
+
+    def close_window(self):  
+        self.withdraw()
+
+class NotesWindow(ctk.CTkToplevel):
+
+    def __init__(self, main_window):
+
+        super().__init__()
+
+        self.title("Notes")
 
         self.geometry("400x300")
 
@@ -33,68 +94,85 @@ class Window(ctk.CTk):
         self.recipe = recipe
 
         self.title("You Brewty!")
-        self.attributes('-zoomed', True)
 
-        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_rowconfigure((0, 1), weight=1)
         self.grid_columnconfigure((0), weight=1)
-        
-        self.configuration_frame = ctk.CTkFrame(self, fg_color=self.cget("bg"), border_color="white", border_width=1)
-        self.configuration_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-        self.configuration_frame.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
 
-        configuration_label = ctk.CTkLabel(master=self.configuration_frame, text="Configuration")
-        configuration_label.grid(row=0, column=3, sticky="nsew", pady=5)
+        ### CONFIGURATION WIDGETS ###
 
-        self.fermentables_frame = ctk.CTkFrame(self, fg_color=self.cget("bg"), border_color="white", border_width=1)
-        self.fermentables_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
-        self.fermentables_frame.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
+        self.configuration_frame = ctk.CTkFrame(self)
+        self.configuration_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
+        self.configuration_frame.rowconfigure((0), weight=1)
+        self.configuration_frame.columnconfigure((0), weight=1)
 
-        fermentables_label = ctk.CTkLabel(master=self.fermentables_frame, text="Fermentables", anchor="w")
-        fermentables_label.grid(row=0, column=2, sticky="nsew", pady=5)
+        self.configuration_header = ctk.CTkLabel(self.configuration_frame, text="Configuration")
+        self.configuration_header.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.fermentables_entry = ctk.CTkEntry(self.fermentables_frame, placeholder_text="fermentable")
-        self.fermentables_entry.grid(row=1, column=0, sticky="nsew", padx=10)
-        self.fermentables_entry.bind(sequence="<FocusOut>", command=self.on_lose_focus_fermentable)
+        self.configuration_recipe_frame = ctk.CTkFrame(self.configuration_frame)
+        self.configuration_recipe_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.fermentables_frame_scroll = ctk.CTkScrollableFrame(master=self.fermentables_frame, border_color="white", border_width=1)
-        self.fermentables_frame_scroll.grid(row=2, column=0, sticky="nsew", padx=10, pady=(5, 0))
-        self.fermentables_frame_scroll.grid_rowconfigure((0, 1, 2, 3), weight=1)
-        self.rowno = 0
+        self.configuration_recipe_label = ctk.CTkLabel(self.configuration_recipe_frame, text="Recipe name:")
+        self.configuration_recipe_label.pack(side=tk.LEFT, padx=10, pady=10)
 
-        fermentables_button = ctk.CTkButton(self.fermentables_frame, text="add", command=self.button_add_fermentable)
-        fermentables_button.grid(row=1, column=1, sticky="nsew")
+        self.configuration_recipe_entry = ctk.CTkEntry(self.configuration_recipe_frame)
+        self.configuration_recipe_entry.pack(side=tk.LEFT, padx=10, pady=10)
 
-        self.hops_frame = ctk.CTkFrame(self, fg_color=self.cget("bg"), border_color="white", border_width=1)
-        self.hops_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        self.hops_frame.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
+        self.configuration_new_button = ctk.CTkButton(self.configuration_recipe_frame, text="New", command=self.button_new)
+        self.configuration_new_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-        hops_label = ctk.CTkLabel(master=self.hops_frame, text="Hops")
-        hops_label.grid(row=0, column=3, sticky="nsew", pady=5)
+        self.configuration_load_button = ctk.CTkButton(self.configuration_recipe_frame, text="Load", command=self.button_file_load)
+        self.configuration_load_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-        self.hops_button = ctk.CTkButton(self.hops_frame, text="add", command=self.button_add_hop)
-        self.hops_button.grid(row=1, column=0, sticky="nsew", padx=10)
+        self.configuration_save_button = ctk.CTkButton(self.configuration_recipe_frame, text="Save", command=self.button_file_save)
+        self.configuration_save_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-        self.yeast_frame = ctk.CTkFrame(self, fg_color=self.cget("bg"), border_color="white", border_width=1)
-        self.yeast_frame.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
-        self.yeast_frame.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
+        ### RECIPE WIDGETS ###
 
-        yeast_label = ctk.CTkLabel(master=self.yeast_frame, text="Yeast")
-        yeast_label.grid(row=0, column=3, sticky="nsew", pady=5)    
+        self.recipe_frame = ctk.CTkFrame(self)
+        self.recipe_frame.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="nsew")
+        self.recipe_frame.rowconfigure((0), weight=1)
+        self.recipe_frame.columnconfigure((0), weight=1)
 
-        self.yeast_button = ctk.CTkButton(self.yeast_frame, text="save", command=self.button_file_save)
-        self.yeast_button.grid(row=1, column=0, padx=10, sticky="nsew")
+        self.recipe_header = ctk.CTkLabel(self.recipe_frame, text="Recipe")
+        self.recipe_header.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.hops_window = None 
+        self.recipe_inner_frame = ctk.CTkFrame(self.recipe_frame)
+        self.recipe_inner_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
-    def button_add_fermentable(self):
-        label = ctk.CTkLabel(master=self.fermentables_frame_scroll, text=self.fermentables_entry.get(), text_color="white")
-        label.grid(row=self.rowno, column=0, sticky="nsew")
-        self.rowno = self.rowno + 1
+        self.recipe_water_configuration_button = ctk.CTkButton(self.recipe_inner_frame, text="Water Configuration", command=self.button_water_configuration)
+        self.recipe_water_configuration_button.pack(anchor=tk.CENTER, side=tk.LEFT, padx=10, pady=10)
 
-    def button_add_yeast(self):
-        pass
+        self.recipe_fermentables_button = ctk.CTkButton(self.recipe_inner_frame, text="Fermentables", command=self.button_fermentables)
+        self.recipe_fermentables_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-    def button_add_hop(self):
+        self.recipe_hops_button = ctk.CTkButton(self.recipe_inner_frame, text="Hops", command=self.button_hops)
+        self.recipe_hops_button.pack(side=tk.LEFT, padx=10, pady=10)
+
+        self.recipe_yeast_button = ctk.CTkButton(self.recipe_inner_frame, text="Yeast", command=self.button_yeast)
+        self.recipe_yeast_button.pack(side=tk.LEFT, padx=10, pady=10)
+
+        self.recipe_notes_button = ctk.CTkButton(self.recipe_inner_frame, text="Notes", command=self.button_notes)
+        self.recipe_notes_button.pack(side=tk.LEFT, padx=10, pady=10)
+
+        ### POP-UP WINDOWS ###
+
+        self.hops_window = None
+        self.water_configuration_window = None
+        self.fermentables_window = None
+        self.yeast_window = None
+        self.notes_window = None
+
+    ### RECIPE BUTTON HANDLERS ### 
+
+    def button_yeast(self):
+        if self.yeast_window is None or not self.yeast_window.winfo_exists():
+            self.yeast_window = YeastWindow(self)
+        else:
+            self.yeast_window.deiconify()
+            self.yeast_window.focus()
+            self.yeast_window.attributes("-topmost", True)
+
+    def button_hops(self):
         if self.hops_window is None or not self.hops_window.winfo_exists():
             self.hops_window = HopsWindow(self)
         else:
@@ -102,12 +180,56 @@ class Window(ctk.CTk):
             self.hops_window.focus()
             self.hops_window.attributes("-topmost", True)
 
-    def button_file_save(self):
-        file_save(self.recipe)
+    def button_water_configuration(self):
+        if self.water_configuration_window is None or not self.water_configuration_window.winfo_exists():
+            self.water_configuration_window = WaterConfigurationWindow(self)
+        else:
+            self.water_configuration_window.deiconify()
+            self.water_configuration_window.focus()
+            self.water_configuration_window.attributes("-topmost", True)   
 
-    def on_lose_focus_fermentable(self, event):
-        try:
-            entry = float(self.fermentables_entry.get())
-            print("It's a float!")
-        except ValueError:
-            print("It's not a float!")
+    def button_fermentables(self):
+        if self.fermentables_window is None or not self.fermentables_window.winfo_exists():
+            self.fermentables_window = FermentablesWindow(self)
+        else:
+            self.fermentables_window.deiconify()
+            self.fermentables_window.focus()
+            self.fermentables_window.attributes("-topmost", True)     
+
+    def button_notes(self):
+        if self.notes_window is None or not self.notes_window.winfo_exists():
+            self.notes_window = NotesWindow(self)
+        else:
+            self.notes_window.deiconify()
+            self.notes_window.focus()
+            self.notes_window.attributes("-topmost", True)    
+
+    ### CONFIGURATION BUTTON HANDLERS ###
+
+    def button_new(self):
+        self.recipe = recipe.Recipe()
+        self.update_ui()
+
+    def button_file_save(self):
+        recipe_name = self.configuration_recipe_entry.get()
+        if recipe_name is None or recipe_name == "":
+            tkmb.showerror("Error", "Please enter a recipe name")
+            return
+        self.recipe.name = recipe_name
+        returned = tkfd.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
+        if not returned:
+            return
+        self.recipe.save_file(returned)
+
+    def button_file_load(self):
+        returned = tkfd.askopenfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
+        if not returned: 
+            return
+        self.recipe.load_file(returned)
+        self.update_ui()
+
+    ### UI UPDATE FUNCTIONS AND UI HANDLERS ###
+
+    def update_ui(self):
+        self.configuration_recipe_entry.delete(0, tk.END)
+        self.configuration_recipe_entry.insert(0, self.recipe.name)
