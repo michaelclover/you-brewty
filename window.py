@@ -1,6 +1,4 @@
 import tkinter as tk
-import tkinter.messagebox as tkmb
-import tkinter.filedialog as tkfd
 import customtkinter as ctk
 
 import recipe
@@ -213,16 +211,16 @@ class Window(ctk.CTk):
     def button_file_save(self):
         recipe_name = self.configuration_recipe_entry.get()
         if recipe_name is None or recipe_name == "":
-            tkmb.showerror("Error", "Please enter a recipe name")
+            tk.messagebox.showerror("Error", "Please enter a recipe name")
             return
         self.recipe.name = recipe_name
-        returned = tkfd.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
+        returned = tk.filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
         if not returned:
             return
         self.recipe.save_file(returned)
 
     def button_file_load(self):
-        returned = tkfd.askopenfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
+        returned = tk.filedialog.askopenfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
         if not returned: 
             return
         self.recipe.load_file(returned)
