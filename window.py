@@ -152,6 +152,29 @@ class Window(ctk.CTk):
         self.recipe_notes_button = ctk.CTkButton(self.recipe_inner_frame, text="Notes", command=self.button_notes)
         self.recipe_notes_button.pack(side=tk.LEFT, padx=10, pady=10)
 
+        self.output_frame = ctk.CTkFrame(self)
+        self.output_frame.grid(row=2, column=0, padx=10, pady=(10, 10), sticky="nsew")
+        self.output_frame.rowconfigure((0), weight=1)
+        self.output_frame.columnconfigure((0), weight=1)
+
+        self.output_header = ctk.CTkLabel(self.output_frame, text="Output")
+        self.output_header.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+        self.output_inner_frame = ctk.CTkFrame(self.output_frame)
+        self.output_inner_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
+        self.output_batch_volume = ctk.CTkLabel(self.output_inner_frame, text="Final volume: ")
+        self.output_batch_volume.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+        self.output_batch_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.output_batch_volume_value.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.output_abv = ctk.CTkLabel(self.output_inner_frame, text="ABV: ")
+        self.output_abv.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
+        self.output_abv_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.output_abv_value.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
         ### POP-UP WINDOWS ###
 
         self.hops_window = None
@@ -231,3 +254,6 @@ class Window(ctk.CTk):
     def update_ui(self):
         self.configuration_recipe_entry.delete(0, tk.END)
         self.configuration_recipe_entry.insert(0, self.recipe.name)
+
+        self.output_batch_volume_value.configure(text=f"{self.recipe.post_boil_volume():.2f} US gals")
+        self.output_abv_value.configure(text=f"{self.recipe.estimate_abv():.2f}%")

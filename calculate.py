@@ -18,7 +18,10 @@ def abv(weight, potential, volume, factor, attenuation):
 def og(weight, potential, factor, volume):
     gp = potential * weight
     gp *= factor
-    og = gp / volume
+    if gp > 0 and volume > 0:
+        og = gp / volume
+    else:
+        og = 0.0
     return convert.to_ppm(og)
 
 # og = the original gravity in ppm

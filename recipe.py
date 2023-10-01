@@ -49,13 +49,15 @@ class Recipe:
     def fermentables_weight(self):
         lbs = 0.0
         for i in self.fermentables:
-            lbs += i["weight"]
+            if "weight" in i:
+                lbs += i["weight"]
         return lbs
 
     def fermentables_potential(self):
         potential = 0.0
         for i in self.fermentables:
-            potential += i["potential"]
+            if "potential" in i:
+                potential += i["potential"]
         return potential
 
     def mash_volume(self):
