@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as tkmb
 import customtkinter as ctk
 
 import recipe
@@ -12,13 +13,8 @@ class HopsWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.title("You Brewty! - Hops")
         self.geometry("400x300")
-
-        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
-        self.button_ok.pack(padx=20, pady=20)
-
-    def close_window(self):  
-        self.withdraw()
 
 class FermentablesWindow(ctk.CTkToplevel):
 
@@ -26,13 +22,8 @@ class FermentablesWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.title("You Brewty! - Fermentables")
         self.geometry("400x300")
-
-        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
-        self.button_ok.pack(padx=20, pady=20)
-
-    def close_window(self):  
-        self.withdraw()
 
     def button_add_fermentable(self):
         label = ctk.CTkLabel(master=self.fermentables_frame_scroll, text=self.fermentables_entry.get(), text_color="white")
@@ -45,13 +36,8 @@ class WaterConfigurationWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.title("You Brewty! - Water Configuration")
         self.geometry("400x300")
-
-        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
-        self.button_ok.pack(padx=20, pady=20)
-
-    def close_window(self):  
-        self.withdraw()
 
 class YeastWindow(ctk.CTkToplevel):
 
@@ -59,13 +45,8 @@ class YeastWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.title("You Brewty! - Yeast")
         self.geometry("400x300")
-
-        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
-        self.button_ok.pack(padx=20, pady=20)
-
-    def close_window(self):  
-        self.withdraw()
 
 class NotesWindow(ctk.CTkToplevel):
 
@@ -73,15 +54,8 @@ class NotesWindow(ctk.CTkToplevel):
 
         super().__init__()
 
-        self.title("Notes")
-
+        self.title("You Brewty! - Notes")
         self.geometry("400x300")
-
-        self.button_ok = ctk.CTkButton(self, text="close", command=self.close_window)
-        self.button_ok.pack(padx=20, pady=20)
-
-    def close_window(self):  
-        self.withdraw()
 
 class Window(ctk.CTk):
 
@@ -183,6 +157,8 @@ class Window(ctk.CTk):
         self.yeast_window = None
         self.notes_window = None
 
+        self.button_new()
+
     ### RECIPE BUTTON HANDLERS ### 
 
     def button_yeast(self):
@@ -234,7 +210,7 @@ class Window(ctk.CTk):
     def button_file_save(self):
         recipe_name = self.configuration_recipe_entry.get()
         if recipe_name is None or recipe_name == "":
-            tk.messagebox.showerror("Error", "Please enter a recipe name")
+            tkmb.showerror("Error", "Please enter a recipe name")
             return
         self.recipe.name = recipe_name
         returned = tk.filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
