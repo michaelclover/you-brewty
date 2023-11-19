@@ -54,8 +54,21 @@ class NotesWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.recipe = main_window.recipe
+
         self.title("You Brewty! - Notes")
         self.geometry("400x300")
+
+        self.notes_textbox = ctk.CTkTextbox(master=self, width=400, height=300)
+        self.notes_textbox.pack(padx=10, pady=10)
+
+        self.notes_textbox.insert(0.0, main_window.recipe.notes)
+
+        self.protocol("WM_DELETE_WINDOW", self.closed)
+
+    def closed(self):
+        self.recipe.notes = self.notes_textbox.get("0.0", "end")
+        self.destroy()
 
 class Window(ctk.CTk):
 
@@ -208,11 +221,14 @@ class Window(ctk.CTk):
         self.update_ui()
 
     def button_file_save(self):
+        # Get the recipe name.
         recipe_name = self.configuration_recipe_entry.get()
         if recipe_name is None or recipe_name == "":
             tkmb.showerror("Error", "Please enter a recipe name")
             return
         self.recipe.name = recipe_name
+
+        # Spawn and present the save as dialog.
         returned = tk.filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
         if not returned:
             return

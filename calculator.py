@@ -19,7 +19,7 @@ SRM: {recipe.morey_srm():.2f}\n")
 
 def main():
 
-    # load our recipe.
+    # Load our recipe.
     sample_recipe = recipe.Recipe()
     sample_recipe.load_file("./recipes/SMaSH pale ale.json")
 
