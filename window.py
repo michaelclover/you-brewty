@@ -22,11 +22,35 @@ class FermentablesWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.rowno = 0
+
         self.title("You Brewty! - Fermentables")
         self.geometry("400x300")
 
+        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_columnconfigure((0, 1, 2, 3, 4), weight=1)
+
+        self.fermentables_name = ctk.CTkEntry(self, placeholder_text="Name")
+        self.fermentables_name.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+        self.fermentables_weight = ctk.CTkEntry(self, placeholder_text="Weight")
+        self.fermentables_weight.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.fermentables_potential = ctk.CTkEntry(self, placeholder_text="Potential")
+        self.fermentables_potential.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
+
+        self.fermentables_lovibond = ctk.CTkEntry(self, placeholder_text="Lovibond")
+        self.fermentables_lovibond.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
+
+        self.fermentables_add = ctk.CTkButton(self, text="Add", command=self.button_add_fermentable)
+        self.fermentables_add.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
+
+        self.fermentables_frame = ctk.CTkScrollableFrame(self)
+        self.fermentables_frame.grid(row=1, column=0, columnspan=5, rowspan=3, sticky="nsew")
+
     def button_add_fermentable(self):
-        label = ctk.CTkLabel(master=self.fermentables_frame_scroll, text=self.fermentables_entry.get(), text_color="white")
+
+        label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_name.get(), text_color="white")
         label.grid(row=self.rowno, column=0, sticky="nsew")
         self.rowno = self.rowno + 1
 
