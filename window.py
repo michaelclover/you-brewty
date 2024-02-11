@@ -46,12 +46,27 @@ class FermentablesWindow(ctk.CTkToplevel):
         self.fermentables_add.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
 
         self.fermentables_frame = ctk.CTkScrollableFrame(self)
+        self.fermentables_frame.columnconfigure((0, 1, 2, 3, 4), weight=1)
         self.fermentables_frame.grid(row=1, column=0, columnspan=5, rowspan=3, sticky="nsew")
 
     def button_add_fermentable(self):
 
-        label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_name.get(), text_color="white")
-        label.grid(row=self.rowno, column=0, sticky="nsew")
+        name_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_name.get(), text_color="white")
+        name_label.grid(row=self.rowno, column=0, sticky="nsew")
+
+        weight_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_weight.get(),  text_color="white")
+        weight_label.grid(row=self.rowno, column=1, sticky="nsew")
+
+        potential_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_potential.get(), text_color="white")
+        potential_label.grid(row=self.rowno, column=2, sticky="nsew")
+
+        lovibond_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_lovibond.get(), text_color="white")
+        lovibond_label.grid(row=self.rowno, column=3, sticky="nsew")
+
+        button = ctk.CTkButton(master=self.fermentables_frame, text="Delete")
+        button.grid(row=self.rowno, column=4, sticky="nsew")
+        button.configure(command=lambda n=name_label, w=weight_label, p=potential_label, l=lovibond_label, b=button: n.destroy() or w.destroy() or p.destroy() or l.destroy() or b.destroy())
+
         self.rowno = self.rowno + 1
 
 class WaterConfigurationWindow(ctk.CTkToplevel):
