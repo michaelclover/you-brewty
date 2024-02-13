@@ -22,7 +22,7 @@ class FermentablesWindow(ctk.CTkToplevel):
 
         super().__init__()
 
-        self.rowno = 0
+        self.rowno = 1 # 1 instead of 0 to account for the header.
 
         self.title("You Brewty! - Fermentables")
         self.geometry("400x300")
@@ -49,22 +49,34 @@ class FermentablesWindow(ctk.CTkToplevel):
         self.fermentables_frame.columnconfigure((0, 1, 2, 3, 4), weight=1)
         self.fermentables_frame.grid(row=1, column=0, columnspan=5, rowspan=3, sticky="nsew")
 
+        self.name_header = ctk.CTkLabel(master=self.fermentables_frame, text="Name", text_color="white")
+        self.name_header.grid(row=0, column=0, sticky="nsew")
+
+        self.weight_header = ctk.CTkLabel(master=self.fermentables_frame, text="Weight", text_color="white")
+        self.weight_header.grid(row=0, column=1, sticky="nsew")
+
+        self.potential_header = ctk.CTkLabel(master=self.fermentables_frame, text="Potential", text_color="white")
+        self.potential_header.grid(row=0, column=2, sticky="nsew")
+
+        self.lovibond_header = ctk.CTkLabel(master=self.fermentables_frame, text="Lovibond", text_color="white")
+        self.lovibond_header.grid(row=0, column=3, sticky="nsew")
+
     def button_add_fermentable(self):
 
         name_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_name.get(), text_color="white")
-        name_label.grid(row=self.rowno, column=0, sticky="nsew")
+        name_label.grid(row=self.rowno, column=0, pady=10, sticky="nsew")
 
         weight_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_weight.get(),  text_color="white")
-        weight_label.grid(row=self.rowno, column=1, sticky="nsew")
+        weight_label.grid(row=self.rowno, column=1, pady=10, sticky="nsew")
 
         potential_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_potential.get(), text_color="white")
-        potential_label.grid(row=self.rowno, column=2, sticky="nsew")
+        potential_label.grid(row=self.rowno, column=2, pady=10, sticky="nsew")
 
         lovibond_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_lovibond.get(), text_color="white")
-        lovibond_label.grid(row=self.rowno, column=3, sticky="nsew")
+        lovibond_label.grid(row=self.rowno, column=3, pady=10, sticky="nsew")
 
         button = ctk.CTkButton(master=self.fermentables_frame, text="Delete")
-        button.grid(row=self.rowno, column=4, sticky="nsew")
+        button.grid(row=self.rowno, column=4, pady=10, sticky="nsew")
         button.configure(command=lambda n=name_label, w=weight_label, p=potential_label, l=lovibond_label, b=button: n.destroy() or w.destroy() or p.destroy() or l.destroy() or b.destroy())
 
         self.rowno = self.rowno + 1
