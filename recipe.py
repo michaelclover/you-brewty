@@ -11,8 +11,8 @@ class Recipe:
                  initial_volume=0, 
                  target_water_grist_ratio=0, 
                  boil_time=0, 
-                 fermentables=[{}], 
-                 hops=[{}],
+                 fermentables=[], 
+                 hops=[],
                  notes=""):
         self.file_version = 1.0
         self.name = name

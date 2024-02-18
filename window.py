@@ -22,7 +22,9 @@ class FermentablesWindow(ctk.CTkToplevel):
 
         super().__init__()
 
-        self.rowno = 1 # 1 instead of 0 to account for the header.
+        self.recipe = main_window.recipe
+
+        self.rowno = 1 # 1 instead of 0, to account for the header.
 
         self.title("You Brewty! - Fermentables")
         self.geometry("400x300")
@@ -61,25 +63,69 @@ class FermentablesWindow(ctk.CTkToplevel):
         self.lovibond_header = ctk.CTkLabel(master=self.fermentables_frame, text="Lovibond", text_color="white")
         self.lovibond_header.grid(row=0, column=3, sticky="nsew")
 
-    def button_add_fermentable(self):
+        self.already_added = 0
+        for fermentable in self.recipe.fermentables:
+            self.button_add_fermentable(fermentable)
+            self.already_added = self.already_added + 1
 
-        name_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_name.get(), text_color="white")
+        self.protocol("WM_DELETE_WINDOW", self.closed)
+
+    def button_delete_fermentable(self, name, weight, potential, lovibond, button):
+
+        n = name.cget("text")
+        self.recipe.fermentables[:] = [d for d in self.recipe.fermentables if not d.get("name") == n]
+
+        name.destroy()
+        weight.destroy()
+        potential.destroy()
+        lovibond.destroy()
+        button.destroy()
+
+    def button_add_fermentable(self, fermentable=None):
+
+        name_label = ctk.CTkLabel(master=self.fermentables_frame, text=fermentable["name"] if fermentable else self.fermentables_name.get(), text_color="white")
         name_label.grid(row=self.rowno, column=0, pady=10, sticky="nsew")
 
-        weight_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_weight.get(),  text_color="white")
+        weight_label = ctk.CTkLabel(master=self.fermentables_frame, text=fermentable["weight"] if fermentable else self.fermentables_weight.get(),  text_color="white")
         weight_label.grid(row=self.rowno, column=1, pady=10, sticky="nsew")
 
-        potential_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_potential.get(), text_color="white")
+        potential_label = ctk.CTkLabel(master=self.fermentables_frame, text=fermentable["potential"] if fermentable else self.fermentables_potential.get(), text_color="white")
         potential_label.grid(row=self.rowno, column=2, pady=10, sticky="nsew")
 
-        lovibond_label = ctk.CTkLabel(master=self.fermentables_frame, text=self.fermentables_lovibond.get(), text_color="white")
+        lovibond_label = ctk.CTkLabel(master=self.fermentables_frame, text=fermentable["lovibond"] if fermentable else self.fermentables_lovibond.get(), text_color="white")
         lovibond_label.grid(row=self.rowno, column=3, pady=10, sticky="nsew")
 
         button = ctk.CTkButton(master=self.fermentables_frame, text="Delete")
         button.grid(row=self.rowno, column=4, pady=10, sticky="nsew")
-        button.configure(command=lambda n=name_label, w=weight_label, p=potential_label, l=lovibond_label, b=button: n.destroy() or w.destroy() or p.destroy() or l.destroy() or b.destroy())
+        button.configure(command=lambda: self.button_delete_fermentable(name_label, weight_label, potential_label, lovibond_label, button))
 
         self.rowno = self.rowno + 1
+
+    def closed(self):
+
+        n = 0
+        name = weight = potential = lovibond = ""
+        for widget in self.fermentables_frame.winfo_children()[4 + (5 * self.already_added):]:
+            if n == 0:
+                name = widget.cget("text")
+            elif n == 1:
+                weight = int(widget.cget("text"))
+            elif n == 2:
+                potential = int(widget.cget("text"))
+            elif n == 3:
+                lovibond = float(widget.cget("text"))
+            elif n == 4 and type(widget) is ctk.CTkButton:
+                self.recipe.fermentables.append({
+                    "name": name,
+                    "weight": weight,
+                    "potential": potential,
+                    "lovibond": lovibond
+                })
+                n = -1
+
+            n = n + 1
+            
+        self.destroy()
 
 class WaterConfigurationWindow(ctk.CTkToplevel):
 
@@ -118,6 +164,7 @@ class NotesWindow(ctk.CTkToplevel):
         self.protocol("WM_DELETE_WINDOW", self.closed)
 
     def closed(self):
+
         self.recipe.notes = self.notes_textbox.get("0.0", "end")
         self.destroy()
 
