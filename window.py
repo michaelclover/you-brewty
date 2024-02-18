@@ -13,8 +13,110 @@ class HopsWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.recipe = main_window.recipe
+
+        self.rowno = 1 # 1 instead of 0, to account for the header.
+
         self.title("You Brewty! - Hops")
         self.geometry("400x300")
+
+        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_columnconfigure((0, 1, 2, 3, 4), weight=1)
+
+        self.hops_name = ctk.CTkEntry(self, placeholder_text="Name")
+        self.hops_name.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+        self.hops_ounces = ctk.CTkEntry(self, placeholder_text="Ounces")
+        self.hops_ounces.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.hops_aau = ctk.CTkEntry(self, placeholder_text="AAU")
+        self.hops_aau.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
+
+        self.hops_boil_time = ctk.CTkEntry(self, placeholder_text="Boil Time")
+        self.hops_boil_time.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
+
+        self.hops_add = ctk.CTkButton(self, text="Add", command=self.button_add_hop)
+        self.hops_add.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
+
+        self.hops_frame = ctk.CTkScrollableFrame(self)
+        self.hops_frame.columnconfigure((0, 1, 2, 3, 4), weight=1)
+        self.hops_frame.grid(row=1, column=0, columnspan=5, rowspan=3, sticky="nsew")
+
+        self.name_header = ctk.CTkLabel(master=self.hops_frame, text="Name", text_color="white")
+        self.name_header.grid(row=0, column=0, sticky="nsew")
+
+        self.ounces_header = ctk.CTkLabel(master=self.hops_frame, text="Ounces", text_color="white")
+        self.ounces_header.grid(row=0, column=1, sticky="nsew")
+
+        self.aau_header = ctk.CTkLabel(master=self.hops_frame, text="AAU", text_color="white")
+        self.aau_header.grid(row=0, column=2, sticky="nsew")
+
+        self.boil_time_header = ctk.CTkLabel(master=self.hops_frame, text="Boil Time", text_color="white")
+        self.boil_time_header.grid(row=0, column=3, sticky="nsew")
+
+        self.already_added = 0
+        for hop in self.recipe.hops:
+            self.button_add_hop(hop)
+            self.already_added = self.already_added + 1
+
+        self.protocol("WM_DELETE_WINDOW", self.closed)
+
+    def button_delete_hop(self, name, ounces, aau, boil_time, button):
+
+        n = name.cget("text")
+        self.recipe.hops[:] = [d for d in self.recipe.hops if not d.get("name") == n]
+
+        name.destroy()
+        ounces.destroy()
+        aau.destroy()
+        boil_time.destroy()
+        button.destroy()
+
+    def button_add_hop(self, hop=None):
+
+        name_label = ctk.CTkLabel(master=self.hops_frame, text=hop["name"] if hop else self.hops_name.get(), text_color="white")
+        name_label.grid(row=self.rowno, column=0, pady=10, sticky="nsew")
+
+        ounces_label = ctk.CTkLabel(master=self.hops_frame, text=hop["ounces"] if hop else self.hops_ounces.get(),  text_color="white")
+        ounces_label.grid(row=self.rowno, column=1, pady=10, sticky="nsew")
+
+        aau_label = ctk.CTkLabel(master=self.hops_frame, text=hop["aau"] if hop else self.hops_aau.get(), text_color="white")
+        aau_label.grid(row=self.rowno, column=2, pady=10, sticky="nsew")
+
+        boil_time_label = ctk.CTkLabel(master=self.hops_frame, text=hop["boil_time"] if hop else self.hops_boil_time.get(), text_color="white")
+        boil_time_label.grid(row=self.rowno, column=3, pady=10, sticky="nsew")
+
+        button = ctk.CTkButton(master=self.hops_frame, text="Delete")
+        button.grid(row=self.rowno, column=4, pady=10, sticky="nsew")
+        button.configure(command=lambda: self.button_delete_hop(name_label, ounces_label, aau_label, boil_time_label, button))
+
+        self.rowno = self.rowno + 1
+
+    def closed(self):
+
+        n = 0
+        name = ounces = aau = boil_time = ""
+        for widget in self.hops_frame.winfo_children()[4 + (5 * self.already_added):]:
+            if n == 0:
+                name = widget.cget("text")
+            elif n == 1:
+                ounces = float(widget.cget("text"))
+            elif n == 2:
+                aau = float(widget.cget("text"))
+            elif n == 3:
+                boil_time = int(widget.cget("text"))
+            elif n == 4 and type(widget) is ctk.CTkButton:
+                self.recipe.hops.append({
+                    "name": name,
+                    "ounces": ounces,
+                    "aau": aau,
+                    "boil_time": boil_time
+                })
+                n = -1
+
+            n = n + 1
+            
+        self.destroy()
 
 class FermentablesWindow(ctk.CTkToplevel):
 
