@@ -244,8 +244,25 @@ class YeastWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.recipe = main_window.recipe
+        self.main_window = main_window
+
         self.title("You Brewty! - Yeast")
         self.geometry("400x300")
+
+        self.yeast_attenuation = ctk.CTkEntry(self, placeholder_text="Yeast Attenuation")
+        self.yeast_attenuation.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.yeast_attenuation.insert(0, self.recipe.yeast_attenuation)
+
+        self.protocol("WM_DELETE_WINDOW", self.closed)
+
+    def closed(self):
+
+        self.recipe.yeast_attenuation = float(self.yeast_attenuation.get())
+
+        self.main_window.update_ui()
+
+        self.destroy()
 
 class NotesWindow(ctk.CTkToplevel):
 
