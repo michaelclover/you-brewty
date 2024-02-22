@@ -13,6 +13,7 @@ class HopsWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.main_window = main_window
         self.recipe = main_window.recipe
 
         self.rowno = 1 # 1 instead of 0, to account for the header.
@@ -115,6 +116,8 @@ class HopsWindow(ctk.CTkToplevel):
                 n = -1
 
             n = n + 1
+
+        self.main_window.update_ui()
             
         self.destroy()
 
@@ -124,6 +127,7 @@ class FermentablesWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.main_window = main_window
         self.recipe = main_window.recipe
 
         self.rowno = 1 # 1 instead of 0, to account for the header.
@@ -227,16 +231,52 @@ class FermentablesWindow(ctk.CTkToplevel):
 
             n = n + 1
             
+        self.main_window.update_ui()
+
         self.destroy()
 
-class WaterConfigurationWindow(ctk.CTkToplevel):
+class ConfigurationWindow(ctk.CTkToplevel):
 
     def __init__(self, main_window):
 
         super().__init__()
 
-        self.title("You Brewty! - Water Configuration")
+        self.main_window = main_window
+        self.recipe = main_window.recipe
+
+        self.title("You Brewty! - Configuration")
         self.geometry("400x300")
+
+        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+
+        self.efficiency = ctk.CTkEntry(self, placeholder_text="Efficiency")
+        self.efficiency.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.efficiency.insert(0, self.recipe.efficiency)
+
+        self.initial_volume = ctk.CTkEntry(self, placeholder_text="Initial Volume")
+        self.initial_volume.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.initial_volume.insert(0, self.recipe.initial_volume) 
+
+        self.boil_time = ctk.CTkEntry(self, placeholder_text="Boil Time")
+        self.boil_time.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.boil_time.insert(0, self.recipe.boil_time)
+
+        self.water_grist_ratio = ctk.CTkEntry(self, placeholder_text="Water Grist Ratio")
+        self.water_grist_ratio.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
+        self.water_grist_ratio.insert(0, self.recipe.target_water_grist_ratio)
+
+        self.protocol("WM_DELETE_WINDOW", self.closed)
+
+    def closed(self):
+        
+        self.recipe.efficiency = float(self.efficiency.get())
+        self.recipe.initial_volume = float(self.initial_volume.get())
+        self.recipe.boil_time = int(self.boil_time.get())
+        self.recipe.target_water_grist_ratio = float(self.water_grist_ratio.get())
+
+        self.main_window.update_ui()
+
+        self.destroy()
 
 class YeastWindow(ctk.CTkToplevel):
 
@@ -244,8 +284,8 @@ class YeastWindow(ctk.CTkToplevel):
 
         super().__init__()
 
-        self.recipe = main_window.recipe
         self.main_window = main_window
+        self.recipe = main_window.recipe
 
         self.title("You Brewty! - Yeast")
         self.geometry("400x300")
@@ -270,6 +310,7 @@ class NotesWindow(ctk.CTkToplevel):
 
         super().__init__()
 
+        self.main_window = main_window
         self.recipe = main_window.recipe
 
         self.title("You Brewty! - Notes")
@@ -285,6 +326,7 @@ class NotesWindow(ctk.CTkToplevel):
     def closed(self):
 
         self.recipe.notes = self.notes_textbox.get("0.0", "end")
+        self.main_window.update_ui()
         self.destroy()
 
 class Window(ctk.CTk):
@@ -341,8 +383,8 @@ class Window(ctk.CTk):
         self.recipe_inner_frame = ctk.CTkFrame(self.recipe_frame)
         self.recipe_inner_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.recipe_water_configuration_button = ctk.CTkButton(self.recipe_inner_frame, text="Water Configuration", command=self.button_water_configuration)
-        self.recipe_water_configuration_button.pack(anchor=tk.CENTER, side=tk.LEFT, padx=10, pady=10)
+        self.recipe_configuration_button = ctk.CTkButton(self.recipe_inner_frame, text="Configuration", command=self.button_configuration)
+        self.recipe_configuration_button.pack(anchor=tk.CENTER, side=tk.LEFT, padx=10, pady=10)
 
         self.recipe_fermentables_button = ctk.CTkButton(self.recipe_inner_frame, text="Fermentables", command=self.button_fermentables)
         self.recipe_fermentables_button.pack(side=tk.LEFT, padx=10, pady=10)
@@ -382,7 +424,7 @@ class Window(ctk.CTk):
         ### POP-UP WINDOWS ###
 
         self.hops_window = None
-        self.water_configuration_window = None
+        self.configuration_window = None
         self.fermentables_window = None
         self.yeast_window = None
         self.notes_window = None
@@ -407,9 +449,9 @@ class Window(ctk.CTk):
             self.hops_window.focus()
             self.hops_window.attributes("-topmost", True)
 
-    def button_water_configuration(self):
-        if self.water_configuration_window is None or not self.water_configuration_window.winfo_exists():
-            self.water_configuration_window = WaterConfigurationWindow(self)
+    def button_configuration(self):
+        if self.configuration_window is None or not self.configuration_window.winfo_exists():
+            self.configuration_window = ConfigurationWindow(self)
         else:
             self.water_configuration_window.deiconify()
             self.water_configuration_window.focus()
