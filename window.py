@@ -411,6 +411,8 @@ class Window(ctk.CTk):
         self.recipe_notes_button = ctk.CTkButton(self.recipe_inner_frame, text="Notes", command=self.button_notes)
         self.recipe_notes_button.pack(side=tk.LEFT, padx=10, pady=10)
 
+        ### IMPORTANT RECIPE INFORMATION ###
+
         self.output_frame = ctk.CTkFrame(self)
         self.output_frame.grid(row=2, column=0, padx=10, pady=(10, 10), sticky="nsew")
         self.output_frame.rowconfigure((0), weight=1)
@@ -421,18 +423,108 @@ class Window(ctk.CTk):
 
         self.output_inner_frame = ctk.CTkFrame(self.output_frame)
         self.output_inner_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.output_inner_frame.columnconfigure((0,1,2,3,4,5,6,7), weight=1)
 
-        self.output_batch_volume = ctk.CTkLabel(self.output_inner_frame, text="Final volume: ")
-        self.output_batch_volume.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.initial_volume = ctk.CTkLabel(self.output_inner_frame, text="Initial volume:")
+        self.initial_volume.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.initial_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.initial_volume_value.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
+        self.mash_volume = ctk.CTkLabel(self.output_inner_frame, text="Mash volume:")
+        self.mash_volume.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.mash_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.mash_volume_value.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.sparge_volume = ctk.CTkLabel(self.output_inner_frame, text="Sparge volume:")
+        self.sparge_volume.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.sparge_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.sparge_volume_value.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.pre_boil_volume = ctk.CTkLabel(self.output_inner_frame, text="Pre-boil volume:")
+        self.pre_boil_volume.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
+        self.pre_boil_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.pre_boil_volume_value.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.output_batch_volume = ctk.CTkLabel(self.output_inner_frame, text="Final volume:")
+        self.output_batch_volume.grid(row=4, column=0, padx=10, pady=10, sticky="nsew")
         self.output_batch_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
-        self.output_batch_volume_value.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+        self.output_batch_volume_value.grid(row=4, column=1, padx=10, pady=10, sticky="nsew")
 
-        self.output_abv = ctk.CTkLabel(self.output_inner_frame, text="ABV: ")
-        self.output_abv.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.post_mash_gravity = ctk.CTkLabel(self.output_inner_frame, text="Post-mash gravity:")
+        self.post_mash_gravity.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
+        self.post_mash_gravity_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.post_mash_gravity_value.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
 
+        self.post_boil_gravity = ctk.CTkLabel(self.output_inner_frame, text="Post-boil gravity:")
+        self.post_boil_gravity.grid(row=1, column=3, padx=10, pady=10, sticky="nsew")
+        self.post_boil_gravity_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.post_boil_gravity_value.grid(row=1, column=4, padx=10, pady=10, sticky="nsew")
+
+        self.final_gravity = ctk.CTkLabel(self.output_inner_frame, text="Final gravity:")
+        self.final_gravity.grid(row=2, column=3, padx=10, pady=10, sticky="nsew")
+        self.final_gravity_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.final_gravity_value.grid(row=2, column=4, padx=10, pady=10, sticky="nsew")
+
+        self.output_abv = ctk.CTkLabel(self.output_inner_frame, text="ABV:")
+        self.output_abv.grid(row=4, column=6, padx=10, pady=10, sticky="nsew")
         self.output_abv_value = ctk.CTkLabel(self.output_inner_frame, text="")
-        self.output_abv_value.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+        self.output_abv_value.grid(row=4, column=7, padx=10, pady=10, sticky="nsew")
+
+        self.ibu = ctk.CTkLabel(self.output_inner_frame, text="IBU:")
+        self.ibu.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
+        self.ibu_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.ibu_value.grid(row=0, column=7, padx=10, pady=10, sticky="nsew")
+
+        self.mcu = ctk.CTkLabel(self.output_inner_frame, text="MCU:")
+        self.mcu.grid(row=1, column=6, padx=10, pady=10, sticky="nsew")
+        self.mcu_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.mcu_value.grid(row=1, column=7, padx=10, pady=10, sticky="nsew")
+
+        self.srm_table = {1: "#FFE699",
+                          2: "#FFD878",
+                          3: "#FFCA5A",
+                          4: "#FFBF42",
+                          5: "#FBB123",
+                          6: "#F8A600",
+                          7: "#F39C00",
+                          8: "#EA8F00",
+                          9: "#E58500",
+                          10: "#DE7C00",
+                          11: "#D77200",
+                          12: "#CF6900",
+                          13: "#CB6200",
+                          14: "#C35900",
+                          15: "#BB5100",
+                          16: "#B54C00",
+                          17: "#B04500",
+                          18: "#A63E00",
+                          19: "#A13700",
+                          20: "#9B3200",
+                          21: "#952D00",
+                          22: "#8E2900",
+                          23: "#882300",
+                          24: "#821E00",
+                          25: "#7B1A00",
+                          26: "#771900",
+                          27: "#701400",
+                          28: "#6A0E00",
+                          29: "#660D00",
+                          30: "#5E0B00",
+                          31: "#5A0A02",
+                          32: "#600903",
+                          33: "#520907",
+                          34: "#4C0505",
+                          35: "#470606",
+                          36: "#420607",
+                          37: "#3D0708",
+                          38: "#370607",
+                          39: "#2D0607",
+                          40: "#1F0506"}
+
+        self.srm = ctk.CTkLabel(self.output_inner_frame, text="SRM:")
+        self.srm.grid(row=2, column=6, padx=10, pady=10, sticky="nsew")
+        self.srm_value = ctk.CTkLabel(self.output_inner_frame, text="")
+        self.srm_value.grid(row=2, column=7, padx=10, pady=10, sticky="nsew")
 
         ### POP-UP WINDOWS ###
 
@@ -519,5 +611,21 @@ class Window(ctk.CTk):
         self.configuration_recipe_entry.delete(0, tk.END)
         self.configuration_recipe_entry.insert(0, self.recipe.name)
 
+        self.initial_volume_value.configure(text=f"{self.recipe.initial_volume:.2f} US gals")
+        self.mash_volume_value.configure(text=f"{self.recipe.mash_volume():.2f} US gals")
+        self.sparge_volume_value.configure(text=f"{self.recipe.sparge_volume():.2f} US gals")
+        self.pre_boil_volume_value.configure(text=f"{self.recipe.pre_boil_volume():.2f} US gals")
         self.output_batch_volume_value.configure(text=f"{self.recipe.post_boil_volume():.2f} US gals")
+
+        self.post_mash_gravity_value.configure(text=f"{self.recipe.pre_boil_og():.3f}")
+        self.post_boil_gravity_value.configure(text=f"{self.recipe.post_boil_og():.3f}")
+        self.final_gravity_value.configure(text=f"{self.recipe.final_gravity():.3f}")
         self.output_abv_value.configure(text=f"{self.recipe.estimate_abv():.2f}%")
+
+        self.ibu_value.configure(text=f"{self.recipe.tinseth_ibu():.2f}")
+        self.mcu_value.configure(text=f"{self.recipe.malt_colour_units():.2f}")
+        self.srm_value.configure(text=f"{self.recipe.morey_srm():.2f}")
+        if round(self.recipe.morey_srm()) in self.srm_table:
+            self.srm_value.configure(bg_color=self.srm_table[round(self.recipe.morey_srm())])
+        else:
+            self.srm_value.configure(bg_color="transparent")
