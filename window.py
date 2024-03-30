@@ -248,21 +248,34 @@ class ConfigurationWindow(ctk.CTkToplevel):
         self.geometry("400x300")
 
         self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_columnconfigure((0, 1), weight=1)
+
+        self.efficiency_label = ctk.CTkLabel(self, text="Efficiency:", text_color="white")
+        self.efficiency_label.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         self.efficiency = ctk.CTkEntry(self, placeholder_text="Efficiency")
-        self.efficiency.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.efficiency.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
         self.efficiency.insert(0, self.recipe.efficiency)
 
+        self.initial_volume_label = ctk.CTkLabel(self, text="Initial Volume (gals):", text_color="white")
+        self.initial_volume_label.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
         self.initial_volume = ctk.CTkEntry(self, placeholder_text="Initial Volume")
-        self.initial_volume.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.initial_volume.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
         self.initial_volume.insert(0, self.recipe.initial_volume) 
 
+        self.boil_time_label = ctk.CTkLabel(self, text="Boil Time (hours):", text_color="white")
+        self.boil_time_label.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+
         self.boil_time = ctk.CTkEntry(self, placeholder_text="Boil Time")
-        self.boil_time.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.boil_time.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
         self.boil_time.insert(0, self.recipe.boil_time)
 
+        self.water_grist_ratio_label = ctk.CTkLabel(self, text="Grist ratio:", text_color="white")
+        self.water_grist_ratio_label.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
+
         self.water_grist_ratio = ctk.CTkEntry(self, placeholder_text="Water Grist Ratio")
-        self.water_grist_ratio.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
+        self.water_grist_ratio.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
         self.water_grist_ratio.insert(0, self.recipe.target_water_grist_ratio)
 
         self.protocol("WM_DELETE_WINDOW", self.closed)
