@@ -55,16 +55,14 @@ class HopsWindow(ctk.CTkToplevel):
         self.boil_time_header = ctk.CTkLabel(master=self.hops_frame, text="Boil Time", text_color="white")
         self.boil_time_header.grid(row=0, column=3, sticky="nsew")
 
-        self.already_added = 0
         for hop in self.recipe.hops:
             self.button_add_hop(hop)
-            self.already_added = self.already_added + 1
 
         self.protocol("WM_DELETE_WINDOW", self.closed)
 
     def button_delete_hop(self, name, ounces, aau, boil_time, button):
 
-        n = name.cget("text")
+        n = name.get()
         self.recipe.hops[:] = [d for d in self.recipe.hops if not d.get("name") == n]
 
         name.destroy()
@@ -75,16 +73,20 @@ class HopsWindow(ctk.CTkToplevel):
 
     def button_add_hop(self, hop=None):
 
-        name_label = ctk.CTkLabel(master=self.hops_frame, text=hop["name"] if hop else self.hops_name.get(), text_color="white")
+        name_label = ctk.CTkEntry(master=self.hops_frame, text_color="white")
+        name_label.insert(0, hop["name"] if hop else self.hops_name.get())
         name_label.grid(row=self.rowno, column=0, pady=10, sticky="nsew")
 
-        ounces_label = ctk.CTkLabel(master=self.hops_frame, text=hop["ounces"] if hop else self.hops_ounces.get(),  text_color="white")
+        ounces_label = ctk.CTkEntry(master=self.hops_frame, text_color="white")
+        ounces_label.insert(0, hop["ounces"] if hop else self.hops_ounces.get())
         ounces_label.grid(row=self.rowno, column=1, pady=10, sticky="nsew")
 
-        aau_label = ctk.CTkLabel(master=self.hops_frame, text=hop["aau"] if hop else self.hops_aau.get(), text_color="white")
+        aau_label = ctk.CTkEntry(master=self.hops_frame, text_color="white")
+        aau_label.insert(0, hop["aau"] if hop else self.hops_aau.get())
         aau_label.grid(row=self.rowno, column=2, pady=10, sticky="nsew")
 
-        boil_time_label = ctk.CTkLabel(master=self.hops_frame, text=hop["boil_time"] if hop else self.hops_boil_time.get(), text_color="white")
+        boil_time_label = ctk.CTkEntry(master=self.hops_frame, text_color="white")
+        boil_time_label.insert(0, hop["boil_time"] if hop else self.hops_boil_time.get())
         boil_time_label.grid(row=self.rowno, column=3, pady=10, sticky="nsew")
 
         button = ctk.CTkButton(master=self.hops_frame, text="Delete")
@@ -97,22 +99,29 @@ class HopsWindow(ctk.CTkToplevel):
 
         n = 0
         name = ounces = aau = boil_time = ""
-        for widget in self.hops_frame.winfo_children()[4 + (5 * self.already_added):]:
+        for widget in self.hops_frame.winfo_children()[4:]:
             if n == 0:
-                name = widget.cget("text")
+                name = widget.get()
             elif n == 1:
-                ounces = float(widget.cget("text"))
+                ounces = float(widget.get())
             elif n == 2:
-                aau = float(widget.cget("text"))
+                aau = float(widget.get())
             elif n == 3:
-                boil_time = int(widget.cget("text"))
+                boil_time = int(widget.get())
             elif n == 4 and type(widget) is ctk.CTkButton:
-                self.recipe.hops.append({
-                    "name": name,
-                    "ounces": ounces,
-                    "aau": aau,
-                    "boil_time": boil_time
-                })
+                e = {"name": name,
+                     "ounces": ounces,
+                     "aau": aau,
+                     "boil_time": boil_time}
+                updated = False
+                for idx, h in enumerate(self.recipe.hops):
+                    if h["name"] == name and h["boil_time"] == boil_time:
+                        self.recipe.hops[idx] = e
+                        updated = True
+
+                if not updated:
+                    self.recipe.hops.append(e)
+
                 n = -1
 
             n = n + 1
@@ -169,16 +178,14 @@ class FermentablesWindow(ctk.CTkToplevel):
         self.lovibond_header = ctk.CTkLabel(master=self.fermentables_frame, text="Lovibond", text_color="white")
         self.lovibond_header.grid(row=0, column=3, sticky="nsew")
 
-        self.already_added = 0
         for fermentable in self.recipe.fermentables:
             self.button_add_fermentable(fermentable)
-            self.already_added = self.already_added + 1
 
         self.protocol("WM_DELETE_WINDOW", self.closed)
 
     def button_delete_fermentable(self, name, weight, potential, lovibond, button):
 
-        n = name.cget("text")
+        n = name.get()
         self.recipe.fermentables[:] = [d for d in self.recipe.fermentables if not d.get("name") == n]
 
         name.destroy()
@@ -189,16 +196,20 @@ class FermentablesWindow(ctk.CTkToplevel):
 
     def button_add_fermentable(self, fermentable=None):
 
-        name_label = ctk.CTkLabel(master=self.fermentables_frame, text=fermentable["name"] if fermentable else self.fermentables_name.get(), text_color="white")
+        name_label = ctk.CTkEntry(master=self.fermentables_frame, text_color="white")
+        name_label.insert(0, fermentable["name"] if fermentable else self.fermentables_name.get())
         name_label.grid(row=self.rowno, column=0, pady=10, sticky="nsew")
 
-        weight_label = ctk.CTkLabel(master=self.fermentables_frame, text=fermentable["weight"] if fermentable else self.fermentables_weight.get(),  text_color="white")
+        weight_label = ctk.CTkEntry(master=self.fermentables_frame, text_color="white")
+        weight_label.insert(0, fermentable["weight"] if fermentable else self.fermentables_weight.get())
         weight_label.grid(row=self.rowno, column=1, pady=10, sticky="nsew")
 
-        potential_label = ctk.CTkLabel(master=self.fermentables_frame, text=fermentable["potential"] if fermentable else self.fermentables_potential.get(), text_color="white")
+        potential_label = ctk.CTkEntry(master=self.fermentables_frame, text_color="white")
+        potential_label.insert(0, fermentable["potential"] if fermentable else self.fermentables_potential.get())
         potential_label.grid(row=self.rowno, column=2, pady=10, sticky="nsew")
 
-        lovibond_label = ctk.CTkLabel(master=self.fermentables_frame, text=fermentable["lovibond"] if fermentable else self.fermentables_lovibond.get(), text_color="white")
+        lovibond_label = ctk.CTkEntry(master=self.fermentables_frame, text_color="white")
+        lovibond_label.insert(0, fermentable["lovibond"] if fermentable else self.fermentables_lovibond.get())
         lovibond_label.grid(row=self.rowno, column=3, pady=10, sticky="nsew")
 
         button = ctk.CTkButton(master=self.fermentables_frame, text="Delete")
@@ -211,22 +222,29 @@ class FermentablesWindow(ctk.CTkToplevel):
 
         n = 0
         name = weight = potential = lovibond = ""
-        for widget in self.fermentables_frame.winfo_children()[4 + (5 * self.already_added):]:
+        for widget in self.fermentables_frame.winfo_children()[4:]:
             if n == 0:
-                name = widget.cget("text")
+                name = widget.get()
             elif n == 1:
-                weight = int(widget.cget("text"))
+                weight = int(widget.get())
             elif n == 2:
-                potential = int(widget.cget("text"))
+                potential = int(widget.get())
             elif n == 3:
-                lovibond = float(widget.cget("text"))
+                lovibond = float(widget.get())
             elif n == 4 and type(widget) is ctk.CTkButton:
-                self.recipe.fermentables.append({
-                    "name": name,
-                    "weight": weight,
-                    "potential": potential,
-                    "lovibond": lovibond
-                })
+                e = {"name": name,
+                     "weight": weight,
+                     "potential": potential,
+                     "lovibond": lovibond}
+                updated = False
+                for idx, f in enumerate(self.recipe.fermentables):
+                    if f["name"] == name:
+                        self.recipe.fermentables[idx] = e
+                        updated = True
+                
+                if not updated:
+                    self.recipe.fermentables.append(e)
+
                 n = -1
 
             n = n + 1
