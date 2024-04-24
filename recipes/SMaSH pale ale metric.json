@@ -1,15 +1,16 @@
 {
     "file_version": 1.0,
     "name": "SMaSH pale ale",
+    "metric": true,
     "efficiency": 0.7,
     "yeast_attenuation": 0.28,
-    "initial_volume": 7,
+    "initial_volume": 26.5,
     "target_water_grist_ratio": 3,
     "boil_time": 1,
     "fermentables": [
         {
             "name": "malt_1",
-            "weight": 10,
+            "weight": 4.53,
             "potential": 38,
             "lovibond": 3.75
         }
@@ -17,13 +18,13 @@
     "hops": [
         {
             "name": "hop_1",
-            "ounces": 1.5,
+            "weight": 42.52,
             "aau": 6.4,
             "boil_time": 60
         },
         {
             "name": "hop_2",
-            "ounces": 1.0,
+            "weight": 28.35,
             "aau": 4.6,
             "boil_time": 15
         }

@@ -1,6 +1,7 @@
 import json
 
 import calculate
+import convert
 
 class Recipe:
 
@@ -13,9 +14,11 @@ class Recipe:
                  boil_time=0, 
                  fermentables=[], 
                  hops=[],
-                 notes=""):
+                 notes="",
+                 metric=True):
         self.file_version = 1.0
         self.name = name
+        self.metric = metric
         self.efficiency = efficiency
         self.yeast_attenuation = yeast_attenuation
         self.initial_volume = initial_volume
@@ -29,6 +32,7 @@ class Recipe:
         return (isinstance(other, Recipe) and
                 self.file_version == other.file_version and
                 self.name == other.name and
+                self.metric == other.metric and
                 self.efficiency == other.efficiency and
                 self.yeast_attenuation == other.yeast_attenuation and
                 self.initial_volume == other.initial_volume and
@@ -61,35 +65,38 @@ class Recipe:
         return potential
 
     def mash_volume(self):
-        return calculate.mash_water(self.target_water_grist_ratio, self.fermentables_weight())
+        return calculate.mash_water(self.target_water_grist_ratio, self.fermentables_weight(), self.metric)
 
     def sparge_volume(self):
         return self.initial_volume - self.mash_volume()
 
     def pre_boil_volume(self):
-        return calculate.post_mash_volume(self.initial_volume, self.fermentables_weight())
+        return calculate.post_mash_volume(self.initial_volume, self.fermentables_weight(), self.metric)
 
     def post_boil_volume(self):
-        return calculate.post_boil_volume(self.pre_boil_volume(), self.boil_time)
+        return calculate.post_boil_volume(self.pre_boil_volume(), self.boil_time, self.metric)
 
     def estimate_abv(self):
         return calculate.abv(self.fermentables_weight(), 
                              self.fermentables_potential(),
                              self.post_boil_volume(),
                              self.efficiency,
-                             self.yeast_attenuation)
+                             self.yeast_attenuation,
+                             self.metric)
 
     def pre_boil_og(self):
         return calculate.og(self.fermentables_weight(), 
                             self.fermentables_potential(),
                             self.efficiency,
-                            self.pre_boil_volume())
+                            self.pre_boil_volume(),
+                            self.metric)
 
     def post_boil_og(self):
         return calculate.og(self.fermentables_weight(),
                             self.fermentables_potential(),
                             self.efficiency,
-                            self.post_boil_volume())
+                            self.post_boil_volume(),
+                            self.metric)
 
     def final_gravity(self):
         return calculate.fg(self.post_boil_og(), self.yeast_attenuation)
@@ -98,17 +105,38 @@ class Recipe:
         ibu = 0.0
         for i in self.hops:
             ibu += calculate.tinseth_ibu(i["aau"], 
-                                         i["ounces"], 
+                                         i["weight"], 
                                          i["boil_time"], 
                                          self.pre_boil_og(), 
-                                         self.post_boil_volume())
+                                         self.post_boil_volume(),
+                                         self.metric)
         return ibu
 
     def malt_colour_units(self):
         mcu = 0.0
         for i in self.fermentables:
-            mcu += calculate.malt_colour_units(i["weight"], i["lovibond"], self.post_boil_volume())
+            mcu += calculate.malt_colour_units(i["weight"], i["lovibond"], self.post_boil_volume(), self.metric)
         return mcu
 
     def morey_srm(self):
         return calculate.morey_srm(self.malt_colour_units())
+    
+    def convert_units(self):
+        if self.metric is True:
+            self.initial_volume = round(convert.litre_to_us_gallon(self.initial_volume), 3)
+            for idx, f in enumerate(self.fermentables):
+                f["weight"] = round(convert.kg_to_lb(f["weight"]), 3)
+                self.fermentables[idx] = f
+            for idx, h in enumerate(self.hops):
+                h["weight"] = round(convert.grams_to_ounces(h["weight"]), 3)
+                self.hops[idx] = h
+            self.metric = False
+        else:
+            self.initial_volume = round(convert.us_gallon_to_litre(self.initial_volume), 3)
+            for idx, f in enumerate(self.fermentables):
+                f["weight"] = round(convert.lb_to_kg(f["weight"]), 3)
+                self.fermentables[idx] = f
+            for idx, h in enumerate(self.hops):
+                h["weight"] = round(convert.ounces_to_grams(h["weight"]), 3)
+                self.hops[idx] = h   
+            self.metric = True         

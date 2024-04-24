@@ -27,7 +27,7 @@ class HopsWindow(ctk.CTkToplevel):
         self.hops_name = ctk.CTkEntry(self, placeholder_text="Name")
         self.hops_name.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.hops_ounces = ctk.CTkEntry(self, placeholder_text="Ounces")
+        self.hops_ounces = ctk.CTkEntry(self, placeholder_text="Weight")
         self.hops_ounces.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         self.hops_aau = ctk.CTkEntry(self, placeholder_text="AAU")
@@ -46,7 +46,7 @@ class HopsWindow(ctk.CTkToplevel):
         self.name_header = ctk.CTkLabel(master=self.hops_frame, text="Name", text_color="white")
         self.name_header.grid(row=0, column=0, sticky="nsew")
 
-        self.ounces_header = ctk.CTkLabel(master=self.hops_frame, text="Ounces", text_color="white")
+        self.ounces_header = ctk.CTkLabel(master=self.hops_frame, text=f"Weight ({'gs' if self.recipe.metric else 'oz'})", text_color="white")
         self.ounces_header.grid(row=0, column=1, sticky="nsew")
 
         self.aau_header = ctk.CTkLabel(master=self.hops_frame, text="AAU", text_color="white")
@@ -78,7 +78,7 @@ class HopsWindow(ctk.CTkToplevel):
         name_label.grid(row=self.rowno, column=0, pady=10, sticky="nsew")
 
         ounces_label = ctk.CTkEntry(master=self.hops_frame, text_color="white")
-        ounces_label.insert(0, hop["ounces"] if hop else self.hops_ounces.get())
+        ounces_label.insert(0, hop["weight"] if hop else self.hops_ounces.get())
         ounces_label.grid(row=self.rowno, column=1, pady=10, sticky="nsew")
 
         aau_label = ctk.CTkEntry(master=self.hops_frame, text_color="white")
@@ -110,7 +110,7 @@ class HopsWindow(ctk.CTkToplevel):
                 boil_time = int(widget.get())
             elif n == 4 and type(widget) is ctk.CTkButton:
                 e = {"name": name,
-                     "ounces": ounces,
+                     "weight": ounces,
                      "aau": aau,
                      "boil_time": boil_time}
                 updated = False
@@ -169,7 +169,7 @@ class FermentablesWindow(ctk.CTkToplevel):
         self.name_header = ctk.CTkLabel(master=self.fermentables_frame, text="Name", text_color="white")
         self.name_header.grid(row=0, column=0, sticky="nsew")
 
-        self.weight_header = ctk.CTkLabel(master=self.fermentables_frame, text="Weight", text_color="white")
+        self.weight_header = ctk.CTkLabel(master=self.fermentables_frame, text=f"Weight ({'kgs' if self.recipe.metric else 'lbs'})", text_color="white")
         self.weight_header.grid(row=0, column=1, sticky="nsew")
 
         self.potential_header = ctk.CTkLabel(master=self.fermentables_frame, text="Potential", text_color="white")
@@ -226,7 +226,7 @@ class FermentablesWindow(ctk.CTkToplevel):
             if n == 0:
                 name = widget.get()
             elif n == 1:
-                weight = int(widget.get())
+                weight = float(widget.get())
             elif n == 2:
                 potential = int(widget.get())
             elif n == 3:
@@ -265,7 +265,7 @@ class ConfigurationWindow(ctk.CTkToplevel):
         self.title("You Brewty! - Configuration")
         self.geometry("400x300")
 
-        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
         self.grid_columnconfigure((0, 1), weight=1)
 
         self.efficiency_label = ctk.CTkLabel(self, text="Efficiency:", text_color="white")
@@ -275,7 +275,7 @@ class ConfigurationWindow(ctk.CTkToplevel):
         self.efficiency.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
         self.efficiency.insert(0, self.recipe.efficiency)
 
-        self.initial_volume_label = ctk.CTkLabel(self, text="Initial Volume (gals):", text_color="white")
+        self.initial_volume_label = ctk.CTkLabel(self, text=f"Initial Volume ({'Litres' if self.recipe.metric else 'US gals'}):", text_color="white")
         self.initial_volume_label.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
         self.initial_volume = ctk.CTkEntry(self, placeholder_text="Initial Volume")
@@ -289,14 +289,35 @@ class ConfigurationWindow(ctk.CTkToplevel):
         self.boil_time.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
         self.boil_time.insert(0, self.recipe.boil_time)
 
-        self.water_grist_ratio_label = ctk.CTkLabel(self, text="Grist ratio:", text_color="white")
+        self.water_grist_ratio_label = ctk.CTkLabel(self, text="Grist ratio (ltrs/kg):", text_color="white")
         self.water_grist_ratio_label.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
 
         self.water_grist_ratio = ctk.CTkEntry(self, placeholder_text="Water Grist Ratio")
         self.water_grist_ratio.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
         self.water_grist_ratio.insert(0, self.recipe.target_water_grist_ratio)
 
+        self.units = tk.IntVar(value=0)
+        if self.recipe.metric is True:
+            self.units = tk.IntVar(value=1)
+        else:
+            self.units = tk.IntVar(value=2)
+        self.metric = ctk.CTkRadioButton(self, text="Metric", variable=self.units, value=1, command=self.units_changed)
+        self.metric.grid(row=4, column=0, padx=10, pady=10, sticky="nsew")
+        self.imperial = ctk.CTkRadioButton(self, text="Imperial", variable=self.units, value=2, command=self.units_changed)
+        self.imperial.grid(row=4, column=1, padx=10, pady=10, sticky="nsew")
+
         self.protocol("WM_DELETE_WINDOW", self.closed)
+
+    def units_changed(self):
+        if self.recipe.metric is True and self.units.get() is 2: # from metric to imperial.
+            self.recipe.convert_units()
+        if self.recipe.metric is False and self.units.get() is 1: # from imperial to metric.
+            self.recipe.convert_units()
+        
+        self.initial_volume_label.configure(text=f"Initial Volume ({'Litres' if self.recipe.metric else 'US gals'}):")      
+        self.initial_volume.delete(0, 'end')
+        self.initial_volume.insert(0, float(f"{self.recipe.initial_volume:.2f}"))
+        self.main_window.update_ui()
 
     def closed(self):
         
@@ -632,11 +653,11 @@ class Window(ctk.CTk):
         self.configuration_recipe_entry.delete(0, tk.END)
         self.configuration_recipe_entry.insert(0, self.recipe.name)
 
-        self.initial_volume_value.configure(text=f"{self.recipe.initial_volume:.2f} US gals")
-        self.mash_volume_value.configure(text=f"{self.recipe.mash_volume():.2f} US gals")
-        self.sparge_volume_value.configure(text=f"{self.recipe.sparge_volume():.2f} US gals")
-        self.pre_boil_volume_value.configure(text=f"{self.recipe.pre_boil_volume():.2f} US gals")
-        self.output_batch_volume_value.configure(text=f"{self.recipe.post_boil_volume():.2f} US gals")
+        self.initial_volume_value.configure(text=f"{self.recipe.initial_volume:.2f} {'Ltrs' if self.recipe.metric else 'US gals'}")
+        self.mash_volume_value.configure(text=f"{self.recipe.mash_volume():.2f} {'Ltrs' if self.recipe.metric else 'US gals'}")
+        self.sparge_volume_value.configure(text=f"{self.recipe.sparge_volume():.2f} {'Ltrs' if self.recipe.metric else 'US gals'}")
+        self.pre_boil_volume_value.configure(text=f"{self.recipe.pre_boil_volume():.2f} {'Ltrs' if self.recipe.metric else 'US gals'}")
+        self.output_batch_volume_value.configure(text=f"{self.recipe.post_boil_volume():.2f} {'Ltrs' if self.recipe.metric else 'US gals'}")
 
         self.post_mash_gravity_value.configure(text=f"{self.recipe.pre_boil_og():.3f}")
         self.post_boil_gravity_value.configure(text=f"{self.recipe.post_boil_og():.3f}")

@@ -1,0 +1,33 @@
+{
+    "file_version": 1.0,
+    "name": "SMaSH pale ale",
+    "metric": false,
+    "efficiency": 0.7,
+    "yeast_attenuation": 0.28,
+    "initial_volume": 7,
+    "target_water_grist_ratio": 3,
+    "boil_time": 1,
+    "fermentables": [
+        {
+            "name": "malt_1",
+            "weight": 10,
+            "potential": 38,
+            "lovibond": 3.75
+        }
+    ],
+    "hops": [
+        {
+            "name": "hop_1",
+            "weight": 1.5,
+            "aau": 6.4,
+            "boil_time": 60
+        },
+        {
+            "name": "hop_2",
+            "weight": 1.0,
+            "aau": 4.6,
+            "boil_time": 15
+        }
+    ],
+    "notes": "A recipe for a basic single malt, single hop pale ale."
+}
