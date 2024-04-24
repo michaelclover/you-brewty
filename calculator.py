@@ -21,7 +21,7 @@ def main():
 
     # Load our recipe.
     sample_recipe = recipe.Recipe()
-    sample_recipe.load_file("./recipes/SMaSH pale ale.json")
+    sample_recipe.load_file("./recipes/SMaSH pale ale metric.json")
 
     #output_recipe(sample_recipe)
 
