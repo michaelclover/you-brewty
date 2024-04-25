@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from CTkToolTip import *
 
 class HopsWindow(ctk.CTkToplevel):
 
@@ -25,9 +26,11 @@ class HopsWindow(ctk.CTkToplevel):
 
         self.hops_aau = ctk.CTkEntry(self, placeholder_text="AAU")
         self.hops_aau.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.hops_aau, message="This is the alpha acid unit rating of your hop. As a general rule, hops with a higher AAU tend to be better for, and used for, adding bitterness.\nHops with a low AAU tend to be ideal and used for flavouring. This is a general rule though, and not always the case.\nThis value should be supplied with your purchased hops, however you should be able to find it online easily.")
 
         self.hops_boil_time = ctk.CTkEntry(self, placeholder_text="Boil Time")
         self.hops_boil_time.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.hops_boil_time, message="This is the time during the boil these hops should be introduced.\nFor example, if you have a boil duration of 1 hour and this value is 60, the hops should be introduced immediately.")
 
         self.hops_add = ctk.CTkButton(self, text="Add", command=self.button_add_hop)
         self.hops_add.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
