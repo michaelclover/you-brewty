@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox as tkmb
 import customtkinter as ctk
+from CTkToolTip import *
 
 import recipe
 from windows.hopswindow import *
@@ -99,56 +100,67 @@ class Window(ctk.CTk):
         self.initial_volume.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         self.initial_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.initial_volume_value.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.initial_volume, message="This is the total volume of water or liquor that you will need to start.")
 
         self.mash_volume = ctk.CTkLabel(self.output_inner_frame, text="Mash volume:")
         self.mash_volume.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
         self.mash_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.mash_volume_value.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.mash_volume, message="This is the total volume of water or liquor that should be used for your mash.\nIt's dictated by your initial volume and grist ratio.")
 
         self.sparge_volume = ctk.CTkLabel(self.output_inner_frame, text="Sparge volume:")
         self.sparge_volume.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
         self.sparge_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.sparge_volume_value.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.sparge_volume, message="This is the total volume of water or liquor that you should sparge with.\nYou can ignore this if you're not sparging.")
 
         self.pre_boil_volume = ctk.CTkLabel(self.output_inner_frame, text="Pre-boil volume:")
         self.pre_boil_volume.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
         self.pre_boil_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.pre_boil_volume_value.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.pre_boil_volume, message="This is the volume of wort you should end up with after the mash and before the boil.\nWater is lost to grain absortion etc.")
 
         self.output_batch_volume = ctk.CTkLabel(self.output_inner_frame, text="Final volume:")
         self.output_batch_volume.grid(row=4, column=0, padx=10, pady=10, sticky="nsew")
         self.output_batch_volume_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.output_batch_volume_value.grid(row=4, column=1, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.output_batch_volume, message="This is the volume that should end up in the fermentation bucket, not accounting for trub loss.")
 
         self.post_mash_gravity = ctk.CTkLabel(self.output_inner_frame, text="Post-mash gravity:")
         self.post_mash_gravity.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
         self.post_mash_gravity_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.post_mash_gravity_value.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.post_mash_gravity, message="This is what the gravity of the wort should measure after the mash is completed.\nRemember to compensate for temperature.")
 
         self.post_boil_gravity = ctk.CTkLabel(self.output_inner_frame, text="Post-boil gravity:")
         self.post_boil_gravity.grid(row=1, column=3, padx=10, pady=10, sticky="nsew")
         self.post_boil_gravity_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.post_boil_gravity_value.grid(row=1, column=4, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.post_boil_gravity, message="This is what the gravity of the wort should measure after the boil.\nRemember to compensate for temperature.")
 
         self.final_gravity = ctk.CTkLabel(self.output_inner_frame, text="Final gravity:")
         self.final_gravity.grid(row=2, column=3, padx=10, pady=10, sticky="nsew")
         self.final_gravity_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.final_gravity_value.grid(row=2, column=4, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.final_gravity, message="This is what the gravity of the beer should measure after primary fermentation is completed.\nHow much sugar your yeast can convert is largely dictated by the attenuation of your chosen yeast.")
 
         self.output_abv = ctk.CTkLabel(self.output_inner_frame, text="ABV:")
         self.output_abv.grid(row=4, column=6, padx=10, pady=10, sticky="nsew")
         self.output_abv_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.output_abv_value.grid(row=4, column=7, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.output_abv, message="This is approximately the resulting ABV of your beer.")
 
         self.ibu = ctk.CTkLabel(self.output_inner_frame, text="IBU:")
         self.ibu.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
         self.ibu_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.ibu_value.grid(row=0, column=7, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.ibu, message="This is the bitterness of your resulting beer. Human palates can only detect units between 0-120.\nAdding hops high in alpha acids earlier into the boil will make your beer more bitter.\nBlonde and other ales tend to have low bitterness (between 20-40), whereas pale ales tend to have high bitterness (anywhere from 40 onwards).")
 
         self.mcu = ctk.CTkLabel(self.output_inner_frame, text="MCU:")
         self.mcu.grid(row=1, column=6, padx=10, pady=10, sticky="nsew")
         self.mcu_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.mcu_value.grid(row=1, column=7, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.mcu, message="This is the malt colour units value. It's calculated by tallying up the fermentables in your recipe.\nPale malts have a lower lovibond rating and don't add as much as amber and chocolate malts.")
 
         self.srm_table = {1: "#FFE699",
                           2: "#FFD878",
@@ -195,6 +207,7 @@ class Window(ctk.CTk):
         self.srm.grid(row=2, column=6, padx=10, pady=10, sticky="nsew")
         self.srm_value = ctk.CTkLabel(self.output_inner_frame, text="")
         self.srm_value.grid(row=2, column=7, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.srm, message="This is an approximation of the colour of your resulting beer using the Standard Research Method.")
 
         ### POP-UP WINDOWS ###
 

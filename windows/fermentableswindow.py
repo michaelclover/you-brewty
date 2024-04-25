@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from CTkToolTip import *
 
 class FermentablesWindow(ctk.CTkToplevel):
 
@@ -25,9 +26,11 @@ class FermentablesWindow(ctk.CTkToplevel):
 
         self.fermentables_potential = ctk.CTkEntry(self, placeholder_text="Potential")
         self.fermentables_potential.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.fermentables_potential, message="This is the sugar potential of your fermentable. The value should come with your malts or you can look it up online.\nThe higher the value, the more sugars your yeast will have to ferment, and the higher your resulting alcohol content will be.\nDifferent sugars tend to impart different flavours.")
 
         self.fermentables_lovibond = ctk.CTkEntry(self, placeholder_text="Lovibond")
         self.fermentables_lovibond.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
+        tooltip = CTkToolTip(self.fermentables_lovibond, message="this is the lovibond rating of your fermentable. The value should come with your malts or you can look it up online.\nThe higher the rating and the more of the malt you use, the darker your resulting beer will be.")
 
         self.fermentables_add = ctk.CTkButton(self, text="Add", command=self.button_add_fermentable)
         self.fermentables_add.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
