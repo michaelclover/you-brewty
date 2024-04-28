@@ -23,30 +23,31 @@ class ConfigurationWindow(ctk.CTkToplevel):
         self.efficiency = ctk.CTkEntry(self, placeholder_text="Efficiency")
         self.efficiency.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
         self.efficiency.insert(0, self.recipe.efficiency)
+        tooltip = CTkToolTip(self.efficiency, message="This is the efficiency of your brewing setup, i.e. how much sugar you're able to extract from your malts,\nhow much water you're able to retain during the mash and boil etc. A brew-in-a-bag setup will be somewhere around 0.7 (70%),\nwhereas a contained setup will be closer to nominal (1.0 or 100%).")
 
         self.initial_volume_label = ctk.CTkLabel(self, text=f"Initial Volume ({'Litres' if self.recipe.metric else 'US gals'}):", text_color="white")
         self.initial_volume_label.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
-        tooltip = CTkToolTip(self.initial_volume, message="This is the initial volume of water or liquor you'll need, input as a whole number or a decimal.")
 
         self.initial_volume = ctk.CTkEntry(self, placeholder_text="Initial Volume")
         self.initial_volume.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
         self.initial_volume.insert(0, self.recipe.initial_volume) 
+        tooltip = CTkToolTip(self.initial_volume, message="This is the initial volume of water or liquor you'll need, input as a whole number or a decimal.")
 
         self.boil_time_label = ctk.CTkLabel(self, text="Boil Time (hours):", text_color="white")
         self.boil_time_label.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        tooltip = CTkToolTip(self.boil_time_label, message="This is how long you should boil your wort for, input as a whole number or a decimal.\nOne hour should be input as 1 or 1.0, whereas One hour and thirty minutes should be input as 1.5, for example.")
 
         self.boil_time = ctk.CTkEntry(self, placeholder_text="Boil Time")
         self.boil_time.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
         self.boil_time.insert(0, self.recipe.boil_time)
+        tooltip = CTkToolTip(self.boil_time, message="This is how long you should boil your wort for, input as a whole number or a decimal.\nOne hour should be input as 1 or 1.0, whereas One hour and thirty minutes should be input as 1.5, for example.")
 
         self.water_grist_ratio_label = ctk.CTkLabel(self, text="Grist ratio (ltrs/kg):", text_color="white")
         self.water_grist_ratio_label.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
-        tooltip = CTkToolTip(self.water_grist_ratio, message="This is your water-to-grist ratio, i.e. how much water you wish to include in the mash per kg of malt.\nThe most practical range for this is between 2-4 litres per kg, though 2.5-3.2 is most commonly used.")
 
         self.water_grist_ratio = ctk.CTkEntry(self, placeholder_text="Water Grist Ratio")
         self.water_grist_ratio.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
         self.water_grist_ratio.insert(0, self.recipe.target_water_grist_ratio)
+        tooltip = CTkToolTip(self.water_grist_ratio, message="This is your water-to-grist ratio, i.e. how much water you wish to include in the mash per kg of malt.\nThe most practical range for this is between 2-4 litres per kg, though 2.5-3.2 is most commonly used.")
 
         self.units = tk.IntVar(value=0)
         if self.recipe.metric is True:
